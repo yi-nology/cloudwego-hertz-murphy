@@ -1,5 +1,7 @@
 # {{.project_name}}
 
+> ⚠️ **重要提醒**：首次使用请务必阅读[快速开始](#快速开始)部分，需要先执行代码生成命令！
+
 基于 CloudWeGo Hertz + Kitex 的 Go 微服务脚手架模板。
 
 集成 Hz HTTP 代码生成、Kitex RPC 代码生成、SQLite/MySQL/PostgreSQL、Redis。
@@ -74,30 +76,60 @@
 
 ## 快速开始
 
+> ⚠️ **重要提示**：首次运行前必须执行代码生成！
+
 ```bash
-# 安装工具
+# 1. 安装工具
 make tools-install
 
-# 安装依赖
+# 2. 安装依赖
 go mod tidy
 
-# 运行
+# 3. 首次运行必须生成代码（重要！）
+make gen-http-update IDL=common.proto
+
+# 4. 运行服务
 make run
 
-# 构建
+# 5. 构建
 make build
 ```
 
+### 首次运行说明
+
+由于模板中的 `gen/` 目录只包含框架结构，具体的 Handler 和 Model 代码需要通过 IDL 文件生成。因此**首次运行前必须执行代码生成命令**：
+
+```bash
+# 生成基础 HTTP 服务代码
+make gen-http-update IDL=common.proto
+
+# 或者生成特定的 HTTP 服务
+make gen-http-update IDL=http/health.proto
+
+# 批量生成所有 HTTP 服务
+make gen-http-update-all
+```
+
+执行完代码生成后，项目才能正常编译和运行。
+
 ## 代码生成
+
+> 📝 **注意**：新项目首次使用时，必须先执行代码生成命令，否则无法编译！
 
 ### HTTP 代码生成 (Hz)
 
 ```bash
-# 初始化新项目
-make gen-http-new IDL=http/health.proto
+# 首次初始化项目（推荐）
+make gen-http-new IDL=common.proto
 
 # 更新已有项目
-make gen-http-update IDL=http/health.proto
+make gen-http-update IDL=common.proto
+
+# 批量更新所有 HTTP IDL 文件
+make gen-http-update-all
+
+# 强制重新初始化（谨慎使用）
+make gen-http-init IDL=common.proto
 ```
 
 ### RPC 代码生成 (Kitex)
